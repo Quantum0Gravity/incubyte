@@ -94,7 +94,6 @@ SELECT AgeGroup, Frequency
 FROM AgeGroups
 ORDER BY Frequency DESC;
 
-
 WITH GenderCounts AS (
   SELECT 
     CustomerGender,
@@ -132,6 +131,7 @@ WITH LoyaltyGroups AS (
 )
 SELECT *
 FROM LoyaltyGroups;
+
 
 3. Product Insights
 
@@ -189,3 +189,39 @@ WITH ReturnStats AS (
 SELECT ProductName, TotalTransactions, TotalReturns, ReturnRate
 FROM ReturnStats
 ORDER BY ReturnRate DESC;
+
+
+4. Store & Payment Insights
+
+Insight:
+Online vs. In-Store Sales:
+  Online and in-store channels are nearly identical. They have almost the same number of transactions, total sales, and average sale amounts, indicating similar customer behavior in both channels.
+Popular Payment Methods:
+  Debit Card, Cash, UPI, and Credit Card are all nearly equally popular. Each method is used in over 110,000 transactions with similar total sales, showing no clear favorite among customers.
+
+Queries:
+WITH StoreSales AS (
+  SELECT
+    StoreType,
+    COUNT(*) AS TransactionCount,
+    SUM(TransactionAmount) AS TotalSales,
+    AVG(TransactionAmount) AS AvgSaleAmount
+  FROM incubyte
+  WHERE StoreType is not null
+  GROUP BY StoreType
+)
+SELECT *
+FROM StoreSales;
+
+WITH PaymentSummary AS (
+  SELECT
+    PaymentMethod,
+    COUNT(*) AS TransactionCount,
+    SUM(TransactionAmount) AS TotalSales
+  FROM incubyte
+  WHERE PaymentMethod IS NOT NULL
+  GROUP BY PaymentMethod
+)
+SELECT *
+FROM PaymentSummary
+ORDER BY TransactionCount DESC;
