@@ -1,4 +1,4 @@
-Incubyte Sales Data Analysis 🛒📊
+Incubyte Sales Data Analysis
 
 Overview
 
@@ -38,3 +38,30 @@ CREATE TABLE IF NOT EXISTS incubyte (
   IsPromotional ENUM('Yes','No') NULL,
   PRIMARY KEY (TransactionID)
 );
+
+Assessment Task:
+
+1. Overall Sales Performance
+
+Insight:
+Total Revenue: 10202662960.19
+Total Transactions: 500000
+Top 3 Cities by Revenue:
+Kolkata
+Ahmedabad
+Bangalore
+
+Queries:
+SELECT 
+    SUM(TransactionAmount) AS Total_Revenue,
+    COUNT(TransactionID) AS Total_Transactions
+FROM incubyte;
+
+SELECT 
+    City, 
+    SUM(TransactionAmount) AS Total_Sales
+FROM incubyte
+GROUP BY City
+ORDER BY Total_Sales DESC
+LIMIT 3;
+
