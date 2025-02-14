@@ -13,3 +13,28 @@ The dataset includes transactions with details such as:
 3. Product Details (Name, Quantity, Discounts)
 4. Sales Channel (Online vs. In-Store)
 5. Return Rates & Customer Feedback
+
+
+--Create a MySQL Table to store data with below query:
+CREATE TABLE IF NOT EXISTS incubyte (
+  TransactionID INT NOT NULL,
+  CustomerID INT NULL,
+  TransactionDate DATETIME NULL,
+  TransactionAmount DECIMAL(12,2) NULL,
+  PaymentMethod VARCHAR(20) NULL,
+  Quantity INT NULL,
+  DiscountPercent DECIMAL(5,2) NULL,
+  City VARCHAR(50) NULL,
+  StoreType VARCHAR(20) NULL,
+  CustomerAge INT NULL,
+  CustomerGender VARCHAR(10) NULL,
+  LoyaltyPoints INT NULL,
+  ProductName VARCHAR(50) NULL,
+  Region VARCHAR(10) NULL,
+  Returned ENUM('Yes','No') NULL,
+  FeedbackScore INT NULL,
+  ShippingCost DECIMAL(10,2) NULL,
+  DeliveryTimeDays INT NULL,
+  IsPromotional ENUM('Yes','No') NULL,
+  PRIMARY KEY (TransactionID)
+);
