@@ -65,3 +65,73 @@ GROUP BY City
 ORDER BY Total_Sales DESC
 LIMIT 3;
 
+
+2. Customer Behavior
+
+Insight:
+Most Frequent Age Group: 60+
+Gender Breakdown:
+Other - 33.39%
+Male - 33.33%
+Female - 33.28%
+Loyalty Points Impact:
+High-loyalty customers (>5000 points) make more transactions, but on average, every group spends about the same, pays similar shipping costs, and gets roughly the same discount.
+
+Queries:
+WITH AgeGroups AS (
+  SELECT 
+    CASE 
+      WHEN CustomerAge < 20 THEN 'Under 20'
+      WHEN CustomerAge BETWEEN 20 AND 29 THEN '20s'
+      WHEN CustomerAge BETWEEN 30 AND 39 THEN '30s'
+      WHEN CustomerAge BETWEEN 40 AND 49 THEN '40s'
+      WHEN CustomerAge BETWEEN 50 AND 59 THEN '50s'
+      ELSE '60+' 
+    END AS AgeGroup,
+    COUNT(*) AS Frequency
+  FROM incubyte
+  WHERE CustomerAge IS NOT NULL
+  GROUP BY AgeGroup
+)
+SELECT AgeGroup, Frequency
+FROM AgeGroups
+ORDER BY Frequency DESC;
+
+
+WITH GenderCounts AS (
+  SELECT 
+    CustomerGender,
+    COUNT(*) AS Count
+  FROM incubyte
+  WHERE CustomerGender IS NOT NULL
+  GROUP BY CustomerGender
+),
+TotalCount AS (
+  SELECT COUNT(*) AS Total
+  FROM incubyte
+  WHERE CustomerGender IS NOT NULL
+)
+SELECT 
+  gc.CustomerGender,
+  gc.Count,
+  ROUND((gc.Count * 100.0 / tc.Total), 2) AS Percentage
+FROM GenderCounts gc
+CROSS JOIN TotalCount tc;
+
+WITH LoyaltyGroups AS (
+  SELECT 
+    CASE 
+      WHEN LoyaltyPoints < 1000 THEN 'Low (<1000)'
+      WHEN LoyaltyPoints BETWEEN 1000 AND 5000 THEN 'Medium (1000-5000)'
+      ELSE 'High (>5000)'
+    END AS LoyaltyPointsGroup,
+    COUNT(*) AS TransactionCount,
+    AVG(TransactionAmount) AS AvgTransactionAmount,
+    AVG(ShippingCost) AS AvgShippingCost,
+    AVG(DiscountPercent) AS AvgDiscountPercent
+  FROM incubyte
+  WHERE LoyaltyPoints IS NOT NULL
+  GROUP BY LoyaltyPointsGroup
+)
+SELECT *
+FROM LoyaltyGroups;
