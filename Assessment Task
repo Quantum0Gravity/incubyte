@@ -1,5 +1,15 @@
 Incubyte Sales Data Analysis 🛒📊
 
 Overview
+
 This repository contains SQL scripts and insights derived from the Incubyte sales dataset. The analysis provides key metrics such as total revenue, top-selling products, customer demographics, and store performance.
 
+
+Dataset Description
+
+The dataset includes transactions with details such as:
+1. Transaction Amount, Date, and Payment Method
+2. Customer Demographics (Age, Gender, Location)
+3. Product Details (Name, Quantity, Discounts)
+4. Sales Channel (Online vs. In-Store)
+5. Return Rates & Customer Feedback
