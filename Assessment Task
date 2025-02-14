@@ -46,10 +46,7 @@ Assessment Task:
 Insight:
 Total Revenue: 10202662960.19
 Total Transactions: 500000
-Top 3 Cities by Revenue:
-Kolkata
-Ahmedabad
-Bangalore
+Top 3 Cities by Revenue: Kolkata, Ahmedabad, Bangalore
 
 Queries:
 SELECT 
@@ -71,11 +68,11 @@ LIMIT 3;
 Insight:
 Most Frequent Age Group: 60+
 Gender Breakdown:
-Other - 33.39%
-Male - 33.33%
-Female - 33.28%
+  Other - 33.39%
+  Male - 33.33%
+  Female - 33.28%
 Loyalty Points Impact:
-High-loyalty customers (>5000 points) make more transactions, but on average, every group spends about the same, pays similar shipping costs, and gets roughly the same discount.
+  High-loyalty customers (>5000 points) make more transactions, but on average, every group spends about the same, pays similar shipping costs, and gets roughly the same discount.
 
 Queries:
 WITH AgeGroups AS (
@@ -135,3 +132,60 @@ WITH LoyaltyGroups AS (
 )
 SELECT *
 FROM LoyaltyGroups;
+
+3. Product Insights
+
+Insight:
+Best-Selling Products: Apple, Notebook, T-Shirt
+Impact of Discounts:
+  Similar Spending & Buying:
+  Customers spend around 20,400 per transaction and buy about 7.5 items, regardless of whether the discount is high, medium, or low.
+  More Transactions with High Discounts:
+  Transactions with high discounts (>20%) occur almost three times as often as those with low (<10%) or medium (10-20%) discounts.
+  In short, while the discount level doesn’t change how much customers spend or how many items they buy, high discounts lead to many more transactions.
+Return Rate:
+  Around 50% of all sales are returned across every product. There's no significant difference—each product has roughly half of its transactions coming back.
+
+Queries:
+WITH ProductSales AS (
+    SELECT
+        ProductName,
+        SUM(Quantity) AS TotalQuantitySold
+    FROM incubyte
+    WHERE ProductName is not null
+    GROUP BY ProductName
+)
+SELECT ProductName, TotalQuantitySold
+FROM ProductSales
+ORDER BY TotalQuantitySold DESC
+LIMIT 3;
+
+WITH DiscountImpact AS (
+    SELECT
+        CASE
+            WHEN DiscountPercent < 10 THEN 'Low (<10%)'
+            WHEN DiscountPercent BETWEEN 10 AND 20 THEN 'Medium (10-20%)'
+            ELSE 'High (>20%)'
+        END AS DiscountCategory,
+        COUNT(*) AS TransactionCount,
+        AVG(TransactionAmount) AS AvgTransactionAmount,
+        AVG(Quantity) AS AvgQuantity
+    FROM incubyte
+    GROUP BY DiscountCategory
+)
+SELECT *
+FROM DiscountImpact;
+
+WITH ReturnStats AS (
+    SELECT
+        ProductName,
+        COUNT(*) AS TotalTransactions,
+        SUM(CASE WHEN Returned = 'Yes' THEN 1 ELSE 0 END) AS TotalReturns,
+        ROUND(SUM(CASE WHEN Returned = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ReturnRate
+    FROM incubyte
+    WHERE ProductName is not null
+    GROUP BY ProductName
+)
+SELECT ProductName, TotalTransactions, TotalReturns, ReturnRate
+FROM ReturnStats
+ORDER BY ReturnRate DESC;
